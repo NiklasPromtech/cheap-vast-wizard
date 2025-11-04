@@ -56,14 +56,24 @@ export const vastApi = {
       method: 'PUT',
       headers: {
         'Content-Type': file.type,
-        'Content-Length': file.size.toString(),
       },
       body: file,
     });
 
-    // Check if upload was successful (200 or 308 for resumable)
-    if (!uploadResponse.ok && uploadResponse.status !== 308) {
-      const errorText = await uploadResponse.text().catch(() => 'Unknown error');
+    // Treat opaque/Status 0 as success due to GCS CORS behavior
+    const uploadSucceeded =
+      uploadResponse.ok ||
+      uploadResponse.status === 308 ||
+      uploadResponse.type === 'opaque' ||
+      uploadResponse.status === 0;
+
+    if (!uploadSucceeded) {
+      let errorText = 'Unknown error';
+      try {
+        errorText = await uploadResponse.text();
+      } catch {
+        // ignore - often opaque due to CORS
+      }
       throw new Error(`Failed to upload video to storage: ${uploadResponse.status} ${errorText}`);
     }
 
