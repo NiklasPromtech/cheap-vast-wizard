@@ -260,10 +260,10 @@ const Dashboard = () => {
                   />
                   <div className="p-3 bg-muted rounded-md">
                     <p className="text-sm font-medium">
-                      You'll receive: <span className="text-accent">{(parseFloat(dollarAmount) * 100).toLocaleString()} impressions</span>
+                      You'll receive: <span className="text-accent">{(parseFloat(dollarAmount) * 20000).toLocaleString()} impressions</span>
                     </p>
                     <p className="text-xs text-muted-foreground mt-1">
-                      $1 = 100 impressions • Minimum $1
+                      $0.05 CPM • Minimum $1
                     </p>
                   </div>
                 </div>

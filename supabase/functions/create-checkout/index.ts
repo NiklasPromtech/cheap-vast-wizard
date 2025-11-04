@@ -33,9 +33,9 @@ serve(async (req) => {
       throw new Error("Amount must be between $1 and $1,000");
     }
 
-    // $1 = 100 impressions, amount in cents for Stripe
-    const amount = Math.round(amount_usd * 100);
-    const impressions = Math.round(amount_usd * 100);
+    // $0.05 CPM = 1000 impressions per $0.05 = 20,000 impressions per $1
+    const amount = Math.round(amount_usd * 100); // in cents for Stripe
+    const impressions = Math.round(amount_usd * 20000);
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
       apiVersion: "2025-08-27.basil",
