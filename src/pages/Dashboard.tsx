@@ -48,13 +48,14 @@ const Dashboard = () => {
     const purchaseAmount = searchParams.get('amount');
     
     if (payStatus === 'success') {
-      // Track purchase event with actual amount from URL
+      // Track conversion event with actual amount from URL
       const amount = purchaseAmount ? parseFloat(purchaseAmount) : 0;
       if (typeof (window as any).gtag === 'function') {
-        (window as any).gtag('event', 'purchase', {
-          transaction_id: `${user?.id}_${Date.now()}`,
-          currency: 'USD',
-          value: amount
+        (window as any).gtag('event', 'conversion', {
+          'send_to': 'AW-443807859/qxHnCJ-h47kbEPPwz9MB',
+          'value': amount,
+          'currency': 'USD',
+          'transaction_id': `${user?.id}_${Date.now()}`
         });
       }
       
