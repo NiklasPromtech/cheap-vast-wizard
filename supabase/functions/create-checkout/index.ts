@@ -61,8 +61,8 @@ serve(async (req) => {
         },
       ],
       mode: "payment",
-      success_url: `https://vastcreatorhub.info/dashboard?success=true`,
-      cancel_url: `https://vastcreatorhub.info/dashboard?canceled=true`,
+      success_url: `https://vastcreatorhub.info/dashboard?pay=success`,
+      cancel_url: `https://vastcreatorhub.info/dashboard?pay=failed`,
       metadata: {
         user_id: user.id,
         impressions: impressions.toString(),

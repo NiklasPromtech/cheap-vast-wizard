@@ -42,6 +42,30 @@ const Dashboard = () => {
     }
   }, [user]);
 
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const payStatus = searchParams.get('pay');
+    
+    if (payStatus === 'success') {
+      toast({
+        title: "Payment Successful! 🎉",
+        description: "Your impressions have been added to your account",
+      });
+      // Reload data to show updated credits
+      if (user) loadData();
+      // Clean up URL
+      window.history.replaceState({}, '', '/dashboard');
+    } else if (payStatus === 'failed') {
+      toast({
+        variant: "destructive",
+        title: "Payment Canceled",
+        description: "Your payment was not completed",
+      });
+      // Clean up URL
+      window.history.replaceState({}, '', '/dashboard');
+    }
+  }, [user, toast]);
+
   const loadData = async () => {
     if (!user) return;
     
