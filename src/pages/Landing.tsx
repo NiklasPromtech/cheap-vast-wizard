@@ -10,7 +10,7 @@ const Landing = () => {
       <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <h1 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-            VastHost
+            VAST Creator Hub
           </h1>
           <Link to="/auth">
             <Button variant="outline" className="border-accent text-accent hover:bg-accent hover:text-accent-foreground">
@@ -136,7 +136,7 @@ const Landing = () => {
       {/* Footer */}
       <footer className="border-t bg-background/95 backdrop-blur">
         <div className="container mx-auto px-4 py-8 text-center text-muted-foreground">
-          <p>© 2024 VastHost. All rights reserved.</p>
+          <p>© 2024 VAST Creator Hub. All rights reserved.</p>
         </div>
       </footer>
     </div>

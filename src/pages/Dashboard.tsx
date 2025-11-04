@@ -162,7 +162,7 @@ const Dashboard = () => {
       <header className="border-b bg-background/95 backdrop-blur">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <h1 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-            VastHost
+            VAST Creator Hub
           </h1>
           <Button variant="outline" onClick={signOut} className="gap-2">
             <LogOut className="w-4 h-4" />

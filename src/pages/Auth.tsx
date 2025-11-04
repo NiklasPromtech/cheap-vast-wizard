@@ -57,7 +57,7 @@ const Auth = () => {
     } else {
       toast({
         title: "Account created!",
-        description: "Welcome to VastHost",
+        description: "Welcome to VAST Creator Hub",
       });
     }
 
@@ -70,7 +70,7 @@ const Auth = () => {
         <div className="text-center mb-8">
           <Link to="/">
             <h1 className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-2">
-              VastHost
+              VAST Creator Hub
             </h1>
           </Link>
           <p className="text-muted-foreground">VAST tag hosting at $0.05 CPM</p>
