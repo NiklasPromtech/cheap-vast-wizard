@@ -14,9 +14,40 @@ export type Database = {
   }
   public: {
     Tables: {
+      credit_transactions: {
+        Row: {
+          amount: number
+          created_at: string
+          description: string | null
+          id: string
+          stripe_payment_intent_id: string | null
+          type: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          stripe_payment_intent_id?: string | null
+          type: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          stripe_payment_intent_id?: string | null
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string | null
+          credits: number
           email: string | null
           full_name: string | null
           id: string
@@ -25,6 +56,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string | null
+          credits?: number
           email?: string | null
           full_name?: string | null
           id?: string
@@ -33,6 +65,7 @@ export type Database = {
         }
         Update: {
           created_at?: string | null
+          credits?: number
           email?: string | null
           full_name?: string | null
           id?: string
