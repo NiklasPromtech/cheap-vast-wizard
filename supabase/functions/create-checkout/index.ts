@@ -61,7 +61,7 @@ serve(async (req) => {
         },
       ],
       mode: "payment",
-      success_url: `https://vastcreatorhub.info/dashboard?pay=success`,
+      success_url: `https://vastcreatorhub.info/dashboard?pay=success&amount=${amount_usd}`,
       cancel_url: `https://vastcreatorhub.info/dashboard?pay=failed`,
       metadata: {
         user_id: user.id,

@@ -45,10 +45,11 @@ const Dashboard = () => {
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
     const payStatus = searchParams.get('pay');
+    const purchaseAmount = searchParams.get('amount');
     
     if (payStatus === 'success') {
-      // Track purchase event
-      const amount = parseFloat(dollarAmount) || 0;
+      // Track purchase event with actual amount from URL
+      const amount = purchaseAmount ? parseFloat(purchaseAmount) : 0;
       if (typeof (window as any).gtag === 'function') {
         (window as any).gtag('event', 'purchase', {
           transaction_id: `${user?.id}_${Date.now()}`,
