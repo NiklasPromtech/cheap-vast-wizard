@@ -137,6 +137,9 @@ const Landing = () => {
       <footer className="border-t bg-background/95 backdrop-blur">
         <div className="container mx-auto px-4 py-8 text-center text-muted-foreground">
           <p>© 2024 VAST Creator Hub. All rights reserved.</p>
+          <Link to="/terms" className="text-sm hover:text-accent transition-colors">
+            Terms & Conditions
+          </Link>
         </div>
       </footer>
     </div>
