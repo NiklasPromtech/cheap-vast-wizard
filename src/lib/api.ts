@@ -60,7 +60,8 @@ export const vastApi = {
       body: file,
     });
 
-    if (!uploadResponse.ok) {
+    // Check if upload was successful (200 or 308 for resumable)
+    if (!uploadResponse.ok && uploadResponse.status !== 308) {
       throw new Error('Failed to upload video to storage');
     }
 
