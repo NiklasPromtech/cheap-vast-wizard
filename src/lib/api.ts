@@ -52,16 +52,23 @@ export const vastApi = {
     const { uploadUrl, fileId, fileName } = await requestResponse.json();
 
     // Step 2: Upload directly to GCS
-    const uploadResponse = await fetch(uploadUrl, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': file.type,
-      },
-      body: file,
-    });
+    let uploadResponse: Response | null = null;
+    try {
+      uploadResponse = await fetch(uploadUrl, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': file.type,
+        },
+        body: file,
+      });
+    } catch (e) {
+      // Some browsers surface GCS CORS as a network error even when the upload succeeds.
+      // We will proceed to the completion step and let the server verify.
+    }
 
-    // Treat opaque/Status 0 as success due to GCS CORS behavior
+    // Treat opaque/Status 0 as success due to GCS CORS behavior; also proceed if fetch threw
     const uploadSucceeded =
+      !uploadResponse ||
       uploadResponse.ok ||
       uploadResponse.status === 308 ||
       uploadResponse.type === 'opaque' ||
