@@ -55,6 +55,13 @@ const Auth = () => {
         variant: "destructive",
       });
     } else {
+      // Track sign up event
+      if (typeof (window as any).gtag === 'function') {
+        (window as any).gtag('event', 'sign_up', {
+          method: 'email'
+        });
+      }
+      
       toast({
         title: "Account created!",
         description: "Welcome to VAST Creator Hub",

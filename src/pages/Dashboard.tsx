@@ -47,6 +47,16 @@ const Dashboard = () => {
     const payStatus = searchParams.get('pay');
     
     if (payStatus === 'success') {
+      // Track purchase event
+      const amount = parseFloat(dollarAmount) || 0;
+      if (typeof (window as any).gtag === 'function') {
+        (window as any).gtag('event', 'purchase', {
+          transaction_id: `${user?.id}_${Date.now()}`,
+          currency: 'USD',
+          value: amount
+        });
+      }
+      
       toast({
         title: "Payment Successful! 🎉",
         description: "Your impressions have been added to your account",
