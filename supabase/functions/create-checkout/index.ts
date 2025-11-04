@@ -66,6 +66,7 @@ serve(async (req) => {
       metadata: {
         user_id: user.id,
         impressions: impressions.toString(),
+        amount_usd: amount_usd.toString(),
       },
     });
 
