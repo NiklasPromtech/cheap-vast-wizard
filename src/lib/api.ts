@@ -56,13 +56,15 @@ export const vastApi = {
       method: 'PUT',
       headers: {
         'Content-Type': file.type,
+        'Content-Length': file.size.toString(),
       },
       body: file,
     });
 
     // Check if upload was successful (200 or 308 for resumable)
     if (!uploadResponse.ok && uploadResponse.status !== 308) {
-      throw new Error('Failed to upload video to storage');
+      const errorText = await uploadResponse.text().catch(() => 'Unknown error');
+      throw new Error(`Failed to upload video to storage: ${uploadResponse.status} ${errorText}`);
     }
 
     // Step 3: Complete upload and create VAST tag
