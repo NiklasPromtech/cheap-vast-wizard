@@ -32,20 +32,57 @@ export interface UploadResponse {
 
 export const vastApi = {
   async uploadVideo(file: File, uid: string): Promise<UploadResponse> {
-    const formData = new FormData();
-    formData.append('video', file);
-    formData.append('uid', uid);
-
-    const response = await fetch(`${API_BASE_URL}/upload`, {
+    // Step 1: Request signed upload URL
+    const requestResponse = await fetch(`${API_BASE_URL}/upload/request`, {
       method: 'POST',
-      body: formData,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        uid,
+        fileName: file.name,
+        contentType: file.type,
+      }),
     });
 
-    if (!response.ok) {
-      throw new Error('Failed to upload video');
+    if (!requestResponse.ok) {
+      throw new Error('Failed to request upload URL');
     }
 
-    return response.json();
+    const { uploadUrl, fileId, fileName } = await requestResponse.json();
+
+    // Step 2: Upload directly to GCS
+    const uploadResponse = await fetch(uploadUrl, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': file.type,
+      },
+      body: file,
+    });
+
+    if (!uploadResponse.ok) {
+      throw new Error('Failed to upload video to storage');
+    }
+
+    // Step 3: Complete upload and create VAST tag
+    const completeResponse = await fetch(`${API_BASE_URL}/upload/complete`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        uid,
+        fileId,
+        fileName,
+        name: file.name.replace(/\.[^/.]+$/, ''), // Remove extension for tag name
+      }),
+    });
+
+    if (!completeResponse.ok) {
+      throw new Error('Failed to complete upload');
+    }
+
+    return completeResponse.json();
   },
 
   async getTags(uid: string): Promise<VastTag[]> {
