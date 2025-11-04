@@ -12,6 +12,8 @@ import { vastApi, VastTag, Credits } from "@/lib/api";
 import { Upload, LogOut, Copy, Pencil, Trash2, Loader2 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { supabase } from "@/integrations/supabase/client";
+import { CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 const Dashboard = () => {
   const { user, signOut, loading: authLoading } = useAuth();
@@ -25,6 +27,8 @@ const Dashboard = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [editingTag, setEditingTag] = useState<VastTag | null>(null);
   const [newName, setNewName] = useState("");
+  const [creditAmount, setCreditAmount] = useState("1000");
+  const [purchasingCredits, setPurchasingCredits] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -148,6 +152,40 @@ const Dashboard = () => {
     });
   };
 
+  const handlePurchaseCredits = async () => {
+    if (!user) return;
+    
+    const amount = parseInt(creditAmount);
+    if (isNaN(amount) || amount < 100 || amount > 100000) {
+      toast({
+        variant: "destructive",
+        title: "Invalid Amount",
+        description: "Please enter a credit amount between 100 and 100,000",
+      });
+      return;
+    }
+
+    setPurchasingCredits(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("create-checkout", {
+        body: { credits: amount },
+      });
+
+      if (error) throw error;
+      if (data?.url) {
+        window.open(data.url, "_blank");
+      }
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to create checkout",
+      });
+    } finally {
+      setPurchasingCredits(false);
+    }
+  };
+
   if (authLoading || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -174,28 +212,73 @@ const Dashboard = () => {
       <div className="container mx-auto px-4 py-8 space-y-8">
         {/* Credits Card */}
         {credits && (
-          <Card className="p-6 border-2 shadow-card">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              <div>
-                <p className="text-sm text-muted-foreground mb-1">Credits</p>
-                <p className="text-2xl font-bold">${credits.credit_usd.toFixed(2)}</p>
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground mb-1">Impressions Bought</p>
-                <p className="text-2xl font-bold">{credits.credit_imps_bought.toLocaleString()}</p>
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground mb-1">Impressions Used</p>
-                <p className="text-2xl font-bold">{credits.credit_imps_used.toLocaleString()}</p>
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground mb-1">Status</p>
-                <Badge variant={credits.status === 'active' ? 'default' : 'secondary'}>
-                  {credits.status}
-                </Badge>
-              </div>
-            </div>
-          </Card>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card className="border-2 shadow-card">
+              <CardHeader>
+                <CardTitle>Your Credits</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-1">Credits</p>
+                    <p className="text-2xl font-bold">${credits.credit_usd.toFixed(2)}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-1">Status</p>
+                    <Badge variant={credits.status === 'active' ? 'default' : 'secondary'}>
+                      {credits.status}
+                    </Badge>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-1">Impressions Bought</p>
+                    <p className="text-2xl font-bold">{credits.credit_imps_bought.toLocaleString()}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-1">Impressions Used</p>
+                    <p className="text-2xl font-bold">{credits.credit_imps_used.toLocaleString()}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-2 shadow-card">
+              <CardHeader>
+                <CardTitle>Purchase Credits</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="credit-amount">Credit Amount</Label>
+                  <Input
+                    id="credit-amount"
+                    type="number"
+                    min="100"
+                    max="100000"
+                    step="100"
+                    value={creditAmount}
+                    onChange={(e) => setCreditAmount(e.target.value)}
+                    placeholder="Enter amount (100-100,000)"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    $0.01 per credit • Minimum 100 credits
+                  </p>
+                </div>
+                <Button 
+                  onClick={handlePurchaseCredits}
+                  disabled={purchasingCredits}
+                  className="w-full bg-accent hover:bg-accent/90 text-accent-foreground"
+                >
+                  {purchasingCredits ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                      Processing...
+                    </>
+                  ) : (
+                    `Buy ${creditAmount} Credits for $${(parseInt(creditAmount) * 0.01).toFixed(2)}`
+                  )}
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
         )}
 
         {/* Upload Section */}
