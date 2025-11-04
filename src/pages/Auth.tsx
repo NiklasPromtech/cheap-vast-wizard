@@ -55,10 +55,12 @@ const Auth = () => {
         variant: "destructive",
       });
     } else {
-      // Track sign up event
+      // Track conversion event for subscriber
       if (typeof (window as any).gtag === 'function') {
-        (window as any).gtag('event', 'sign_up', {
-          method: 'email'
+        (window as any).gtag('event', 'conversion', {
+          'send_to': 'AW-443807859/nUpfCOK_5rkbEPPwz9MB',
+          'value': 0.0,
+          'currency': 'USD'
         });
       }
       
