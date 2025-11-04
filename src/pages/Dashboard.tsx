@@ -27,7 +27,7 @@ const Dashboard = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [editingTag, setEditingTag] = useState<VastTag | null>(null);
   const [newName, setNewName] = useState("");
-  const [creditAmount, setCreditAmount] = useState("1000");
+  const [dollarAmount, setDollarAmount] = useState("10");
   const [purchasingCredits, setPurchasingCredits] = useState(false);
 
   useEffect(() => {
@@ -155,12 +155,12 @@ const Dashboard = () => {
   const handlePurchaseCredits = async () => {
     if (!user) return;
     
-    const amount = parseInt(creditAmount);
-    if (isNaN(amount) || amount < 100 || amount > 100000) {
+    const amount = parseFloat(dollarAmount);
+    if (isNaN(amount) || amount < 1 || amount > 1000) {
       toast({
         variant: "destructive",
         title: "Invalid Amount",
-        description: "Please enter a credit amount between 100 and 100,000",
+        description: "Please enter an amount between $1 and $1,000",
       });
       return;
     }
@@ -168,7 +168,7 @@ const Dashboard = () => {
     setPurchasingCredits(true);
     try {
       const { data, error } = await supabase.functions.invoke("create-checkout", {
-        body: { credits: amount },
+        body: { amount_usd: amount },
       });
 
       if (error) throw error;
@@ -243,24 +243,29 @@ const Dashboard = () => {
 
             <Card className="border-2 shadow-card">
               <CardHeader>
-                <CardTitle>Purchase Credits</CardTitle>
+                <CardTitle>Purchase Impressions</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="credit-amount">Credit Amount</Label>
+                  <Label htmlFor="dollar-amount">Amount ($)</Label>
                   <Input
-                    id="credit-amount"
+                    id="dollar-amount"
                     type="number"
-                    min="100"
-                    max="100000"
-                    step="100"
-                    value={creditAmount}
-                    onChange={(e) => setCreditAmount(e.target.value)}
-                    placeholder="Enter amount (100-100,000)"
+                    min="1"
+                    max="1000"
+                    step="1"
+                    value={dollarAmount}
+                    onChange={(e) => setDollarAmount(e.target.value)}
+                    placeholder="Enter amount ($1-$1,000)"
                   />
-                  <p className="text-xs text-muted-foreground">
-                    $0.01 per credit • Minimum 100 credits
-                  </p>
+                  <div className="p-3 bg-muted rounded-md">
+                    <p className="text-sm font-medium">
+                      You'll receive: <span className="text-accent">{(parseFloat(dollarAmount) * 100).toLocaleString()} impressions</span>
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      $1 = 100 impressions • Minimum $1
+                    </p>
+                  </div>
                 </div>
                 <Button 
                   onClick={handlePurchaseCredits}
@@ -273,7 +278,7 @@ const Dashboard = () => {
                       Processing...
                     </>
                   ) : (
-                    `Buy ${creditAmount} Credits for $${(parseInt(creditAmount) * 0.01).toFixed(2)}`
+                    `Purchase for $${parseFloat(dollarAmount).toFixed(2)}`
                   )}
                 </Button>
               </CardContent>

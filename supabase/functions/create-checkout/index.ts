@@ -27,14 +27,15 @@ serve(async (req) => {
       throw new Error("User not authenticated");
     }
 
-    const { credits } = await req.json();
+    const { amount_usd } = await req.json();
     
-    if (!credits || credits < 100 || credits > 100000) {
-      throw new Error("Credits must be between 100 and 100,000");
+    if (!amount_usd || amount_usd < 1 || amount_usd > 1000) {
+      throw new Error("Amount must be between $1 and $1,000");
     }
 
-    // $0.01 per credit
-    const amount = Math.round(credits * 1); // in cents
+    // $1 = 100 impressions, amount in cents for Stripe
+    const amount = Math.round(amount_usd * 100);
+    const impressions = Math.round(amount_usd * 100);
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
       apiVersion: "2025-08-27.basil",
@@ -51,8 +52,8 @@ serve(async (req) => {
           price_data: {
             currency: "usd",
             product_data: {
-              name: `${credits.toLocaleString()} Credits`,
-              description: `Purchase ${credits.toLocaleString()} VAST tag impression credits`,
+              name: `${impressions.toLocaleString()} Impressions`,
+              description: `Purchase ${impressions.toLocaleString()} VAST tag impressions`,
             },
             unit_amount: amount,
           },
@@ -64,7 +65,7 @@ serve(async (req) => {
       cancel_url: `${req.headers.get("origin")}/dashboard?canceled=true`,
       metadata: {
         user_id: user.id,
-        credits: credits.toString(),
+        impressions: impressions.toString(),
       },
     });
 

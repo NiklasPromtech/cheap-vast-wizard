@@ -28,10 +28,10 @@ serve(async (req) => {
       const session = event.data.object as Stripe.Checkout.Session;
       
       const userId = session.metadata?.user_id;
-      const credits = parseInt(session.metadata?.credits || "0");
+      const impressions = parseInt(session.metadata?.impressions || "0");
       
-      if (!userId || !credits) {
-        console.error("Missing metadata:", { userId, credits });
+      if (!userId || !impressions) {
+        console.error("Missing metadata:", { userId, impressions });
         return new Response("Missing metadata", { status: 400 });
       }
 
@@ -40,10 +40,10 @@ serve(async (req) => {
         Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
       );
 
-      // Add credits to user profile
+      // Add impressions to user profile
       const { error: updateError } = await supabase.rpc("increment_credits", {
         user_id: userId,
-        amount: credits,
+        amount: impressions,
       });
 
       if (updateError) {
@@ -57,7 +57,7 @@ serve(async (req) => {
         if (profile) {
           await supabase
             .from("profiles")
-            .update({ credits: profile.credits + credits })
+            .update({ credits: profile.credits + impressions })
             .eq("user_id", userId);
         }
       }
@@ -65,13 +65,13 @@ serve(async (req) => {
       // Log transaction
       await supabase.from("credit_transactions").insert({
         user_id: userId,
-        amount: credits,
+        amount: impressions,
         type: "purchase",
         stripe_payment_intent_id: session.payment_intent as string,
-        description: `Purchased ${credits.toLocaleString()} credits`,
+        description: `Purchased ${impressions.toLocaleString()} impressions for $${(impressions / 100).toFixed(2)}`,
       });
 
-      console.log(`Added ${credits} credits to user ${userId}`);
+      console.log(`Added ${impressions} impressions to user ${userId}`);
     }
 
     return new Response(JSON.stringify({ received: true }), {
