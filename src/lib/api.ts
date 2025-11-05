@@ -1,4 +1,4 @@
-const API_BASE_URL = 'https://vast-generator-m5ldl363aa-uc.a.run.app/api';
+const API_BASE_URL = 'https://vast-generator-m5ldl363aa-lz.a.run.app/api';
 
 export interface VastTag {
   id: string;
