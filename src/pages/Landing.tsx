@@ -2,12 +2,30 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Check, Zap, Shield, TrendingDown } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 
 const Landing = () => {
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePos({ x: e.clientX, y: e.clientY });
+    };
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
+
   return (
-    <div className="min-h-screen bg-gradient-hero">
+    <div className="min-h-screen bg-gradient-hero relative overflow-hidden">
+      {/* Mouse-tracking gradient effect */}
+      <div
+        className="pointer-events-none fixed inset-0 z-0 transition-opacity duration-300"
+        style={{
+          background: `radial-gradient(600px circle at ${mousePos.x}px ${mousePos.y}px, rgba(var(--accent-rgb, 147, 51, 234), 0.15), transparent 40%)`,
+        }}
+      />
       {/* Header */}
-      <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 relative z-10">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <h1 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
             VAST Creator Hub
@@ -21,7 +39,7 @@ const Landing = () => {
       </header>
 
       {/* Hero Section */}
-      <section className="container mx-auto px-4 py-20 text-center">
+      <section className="container mx-auto px-4 py-20 text-center relative z-10">
         <div className="max-w-4xl mx-auto space-y-8">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-accent/10 border border-accent/20 rounded-full text-sm font-medium text-accent animate-fade-in">
             <TrendingDown className="w-4 h-4" />
@@ -45,9 +63,6 @@ const Landing = () => {
                 Get Started Free
               </Button>
             </Link>
-            <Button size="lg" variant="outline" className="text-lg px-8">
-              View Pricing
-            </Button>
           </div>
 
           <p className="text-sm text-muted-foreground animate-fade-in">
@@ -57,7 +72,7 @@ const Landing = () => {
       </section>
 
       {/* Features */}
-      <section className="container mx-auto px-4 py-20">
+      <section className="container mx-auto px-4 py-20 relative z-10">
         <div className="grid md:grid-cols-3 gap-8">
           <Card className="p-6 border-2 hover:border-accent transition-colors hover:shadow-accent">
             <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center mb-4">
@@ -92,7 +107,7 @@ const Landing = () => {
       </section>
 
       {/* Pricing Comparison */}
-      <section className="container mx-auto px-4 py-20">
+      <section className="container mx-auto px-4 py-20 relative z-10">
         <div className="max-w-2xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-4">Simple, Transparent Pricing</h2>
           <p className="text-center text-muted-foreground mb-12">
@@ -134,7 +149,7 @@ const Landing = () => {
       </section>
 
       {/* Footer */}
-      <footer className="border-t bg-background/95 backdrop-blur">
+      <footer className="border-t bg-background/95 backdrop-blur relative z-10">
         <div className="container mx-auto px-4 py-8 text-center text-muted-foreground">
           <p>© 2024 VAST Creator Hub. All rights reserved.</p>
           <Link to="/terms" className="text-sm hover:text-accent transition-colors">
