@@ -21,7 +21,7 @@ const Landing = () => {
       <div
         className="pointer-events-none fixed inset-0 z-0 transition-opacity duration-300"
         style={{
-          background: `radial-gradient(600px circle at ${mousePos.x}px ${mousePos.y}px, rgba(var(--accent-rgb, 147, 51, 234), 0.15), transparent 40%)`,
+          background: `radial-gradient(600px circle at ${mousePos.x}px ${mousePos.y}px, rgba(7, 185, 213, 0.15), transparent 40%)`,
         }}
       />
       {/* Header */}
