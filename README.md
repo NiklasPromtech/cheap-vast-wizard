@@ -1,73 +1,31 @@
-# Welcome to your Lovable project
+# VAST Creator Hub
 
-## Project info
+A tool that turns a video file into a ready-to-use [VAST](https://en.wikipedia.org/wiki/Video_Ad_Serving_Template) tag — the IAB standard that lets a video play as a programmatic ad — so you can run video creative without paying a platform to host the files.
 
-**URL**: https://lovable.dev/projects/57b3efaa-7240-410c-90b8-ca3473553545
+**Live app:** https://vastcreatorhub.info
 
-## How can I edit this code?
+## Why I built it
 
-There are several ways of editing your application.
+A DSP we were using started charging to host uploaded video files. But uploading a **VAST tag** was free — and a VAST tag is just a small XML wrapper that points to a hosted video and tells the ad player how to serve it.
 
-**Use Lovable**
+So instead of paying per hosted file, I built a generator that produces valid VAST tags from your video. Same creative running in market, without the hosting fee. It's a small tool that solved a real, recurring cost.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/57b3efaa-7240-410c-90b8-ca3473553545) and start prompting.
+## What it does
 
-Changes made via Lovable will be committed automatically to this repo.
+- Takes a video (or a hosted video URL) and generates a spec-compliant VAST tag
+- Handles the XML structure the ad player expects — media file, tracking events, duration, click-through
+- Gives you a tag you can paste straight into a campaign, no file hosting on the paid platform required
 
-**Use your preferred IDE**
+## How it's built
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- **Frontend:** TypeScript / React (built with [Lovable](https://lovable.dev))
+- Generates IAB-standard VAST XML from user input
+- Live at [vastcreatorhub.info](https://vastcreatorhub.info)
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## The idea behind it
 
-Follow these steps:
+Fifteen years in programmatic advertising taught me where the hidden costs and manual friction sit. This is one of them turned into a tool: a painful, recurring, billable task (hosting video creative) removed by a small piece of software that produces the free alternative instead. Deep-domain problem, lightweight build.
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+---
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/57b3efaa-7240-410c-90b8-ca3473553545) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+*One of a number of things I've built — mostly AI-powered tools, data systems, and small apps that solve a real problem. Built solo, shipped live.*
